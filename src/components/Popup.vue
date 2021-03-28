@@ -88,5 +88,6 @@ export default {
 .icon-verified:before {
     content: "\f00c";
     color: #62fdda;
+    font-weight: 900;
 }
 </style>
