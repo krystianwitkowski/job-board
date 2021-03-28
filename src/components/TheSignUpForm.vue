@@ -1,7 +1,10 @@
 <template>
   <div class="wrapper">
   <transition name="fetch">
-    <FetchFailure v-if="fetchFailure" />
+    <Popup v-if="requestFailed" text-class="text-wrong" icon-class="icon-wrong" text="Something went wrong" />
+  </transition>
+  <transition name="fetch">
+    <Popup v-if="requestSuccess" text-class="text-activation" icon-class="icon-activation" text="Activation link has been sent" />
   </transition>
     <transition name="fade">
       <form v-if="form.status" class="form">
@@ -68,13 +71,13 @@
 </template>
 
 <script>
-import FetchFailure from "./FetchFailure.vue";
+import Popup from "./Popup.vue";
 import createUser from "../api/createUser.js";
 
 export default {
   name: "TheSignUpForm",
   components: {
-    FetchFailure
+    Popup
   },
   data() {
     return {
@@ -89,23 +92,36 @@ export default {
       eyeSlash: true,
       typeText: 'text',
       typePassword: 'password',
-      fetchFailure: false
+      request: [
+        {
+          name: 'loading',
+          status: false
+        },
+        {
+          name: 'success',
+          status: false
+        },
+        {
+          name: 'failed',
+          status: false
+        }
+      ]
     };
   },
   methods: {
     async getRegister() {
       try {
-        const result = await createUser(this.form);
+        const body = await createUser(this.form);
+        const result = await body.json();
 
         if (result.error) {
           this.validate = result.error.data;
-          this.fetchFailure = false
         } else {
           this.validate = ["", ""];
-          this.fetchFailure = false
+          this.request = this.request.map(req => req.name === 'success' ? { ...req, status: true } : { ...req, status: false })
         }
       } catch {
-        this.fetchFailure = true
+        this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false })
       }
     },
     getEye(){
@@ -113,6 +129,12 @@ export default {
     }
   },
   computed: {
+    requestSuccess(){
+      return this.request.find(req => req.name === 'success').status;
+    },
+    requestFailed(){
+      return this.request.find(req => req.name === 'failed').status;
+    },
     isActiveNameCompany() {
       return this.form.nameCompany.length > 0;
     },
@@ -135,6 +157,7 @@ export default {
 <style scoped>
 .wrapper {
   padding-top: 62px;
+  position: relative;
 }
 
 .form {

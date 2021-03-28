@@ -1,9 +1,11 @@
 <template>
   <div class="wrapper">
-  <transition name="fetch">
-    <FetchFailure v-if="fetchFailure" />
-  </transition>
-    <VerifiedInfo :success-verify="successVerify" />
+    <transition name="fetch">
+      <Popup v-if="requestFailed" text-class="text-wrong" icon-class="icon-wrong" text="Something went wrong" />
+    </transition>
+    <transition name="fetch">
+      <Popup v-if="requestSuccess" text-class="text-verified" icon-class="icon-verified" text="Account verified" />
+    </transition>
     <transition name="fade">
       <form v-if="form.status" class="form">
         <label class="label-input-text">
@@ -45,16 +47,14 @@
   </div>
 </template>
 <script>
+import Popup from "./Popup.vue";
 import verifyUser from "../api/verifyUser.js";
 import authenticateUser from "../api/authenticateUser.js";
-import VerifiedInfo from "./VerifiedInfo.vue";
-import FetchFailure from "./FetchFailure.vue";
 
 export default {
   name: "TheSignInForm",
   components: {
-    VerifiedInfo,
-    FetchFailure
+    Popup
   },
   data() {
     return {
@@ -64,11 +64,23 @@ export default {
         status: false
       },
       validate: ["", ""],
-      successVerify: false,
-      fetchFailure: false,
       eyeSlash: true,
       typeText: 'text',
-      typePassword: 'password'
+      typePassword: 'password',
+      request: [
+        {
+          name: 'loading',
+          status: false
+        },
+        {
+          name: 'success',
+          status: false
+        },
+        {
+          name: 'failed',
+          status: false
+        }
+      ]
     };
   },
   methods: {
@@ -77,7 +89,8 @@ export default {
     },
     async getAuthenticate() {
       try {
-        const result = await authenticateUser(this.form);
+        const body = await authenticateUser(this.form);
+        const result = await body.json()
 
         if (result.error) {
           this.validate = result.error.data;
@@ -88,7 +101,7 @@ export default {
           return this.$router.push("/dashboard");
         }
       } catch {
-        this.fetchFailure = true
+        this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false })
       }
 
     },
@@ -96,13 +109,19 @@ export default {
       const result = await verifyUser(queryVerify);
 
       if (result.error) {
-        this.successVerify = false;
+        this.request = this.request.map(req => req.name === 'success' ? { ...req, status: false } : { ...req, status: false })
       } else {
-        this.successVerify = true;
+        this.request = this.request.map(req => req.name === 'success' ? { ...req, status: true } : { ...req, status: false })
       }
     },
   },
   computed: {
+    requestSuccess(){
+      return this.request.find(req => req.name === 'success').status;
+    },
+    requestFailed(){
+      return this.request.find(req => req.name === 'failed').status;
+    },
     isActiveEmail() {
       return this.form.email.length > 0;
     },
