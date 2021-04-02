@@ -1,5 +1,5 @@
 <template>
-    <div class="popup">
+    <div :class="{ 'absolute' : positionClass }" class="popup">
         <p :class="textClass" class="popup-text"><span :class="iconClass" class="popup-icon"></span>{{ text }}</p>
     </div>
 </template>
@@ -19,7 +19,8 @@ export default {
         text: {
           type: String,
           required: true
-        }
+        },
+        positionClass: Boolean
     }
 }
 </script>
@@ -89,5 +90,14 @@ export default {
     content: "\f00c";
     color: #62fdda;
     font-weight: 900;
+}
+
+.absolute {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 999;
+  top: 20px;
 }
 </style>

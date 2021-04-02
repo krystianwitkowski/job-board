@@ -115,10 +115,14 @@ export default {
         const result = await body.json();
 
         if (result.error) {
+          this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false })
+          
           this.validate = result.error.data;
         } else {
-          this.validate = ["", ""];
+          this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false })
           this.request = this.request.map(req => req.name === 'success' ? { ...req, status: true } : { ...req, status: false })
+          
+          this.validate = ["", ""];
         }
       } catch {
         this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false })

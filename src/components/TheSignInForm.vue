@@ -93,13 +93,18 @@ export default {
         const result = await body.json()
 
         if (result.error) {
+          this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false })
+          
           this.validate = result.error.data;
         } else {
+          this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false })
           localStorage.setItem("tokens", JSON.stringify(result.data.tokens));
+          
           this.validate = ["", ""];
 
           return this.$router.push("/dashboard");
         }
+
       } catch {
         this.request = this.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false })
       }

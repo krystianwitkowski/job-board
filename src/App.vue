@@ -72,6 +72,7 @@
   body {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
+    overflow-x: hidden;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap');

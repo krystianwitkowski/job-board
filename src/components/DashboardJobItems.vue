@@ -1,25 +1,21 @@
 <template>
   <div class="wrapper">
+  <transition name="fetch">
+    <Popup v-if="requestFailed" :position-class="true" text-class="text-wrong" icon-class="icon-wrong" text="Something went wrong" />
+  </transition>
     <div class="content">
-      <TheDashboardJobFilters />
       <div class="jobs-wrapper">
         <div class="scroll-hidden">
-        <transition name="fade">
-          <div v-show="splashscreen" class="splashscreen">
-            <div class="dots">
-              <span class="dots-item dot-item-1"></span>
-              <span class="dots-item dot-item-2"></span>
-              <span class="dots-item dot-item-3"></span>
-            </div>
-          </div>
-        </transition>
+          <transition name="fade">
+            <Spinner v-show="splashscreen" />
+          </transition>
           <article @click="getMore" v-for="(post, index) in posts" :key="index" class="job-item" :id="post.id">
               <header class="job-item-header">
                   <h3 class="job-item-header__title">{{ post.job }}</h3>
-                  <p class="job-item-salary">{{ post.minSalary }} - {{ post.maxSalary }} {{ post.currency.find(post => post.active).name }}</p>
+                  <p class="job-item-salary">{{ Number(post.minSalary).toLocaleString() }} - {{ Number(post.maxSalary).toLocaleString() }} {{ post.currency.find(post => post.active).name }}</p>
               </header>
               <p class="job-info"><span class="company">{{ post.company }}</span><span class="place">{{ post.location }}</span></p>
-              <div class="job-stack"><p class="job-tags"><span v-for="(tag, index) in post.tags" :key="index" class="tag">{{ tag.fullName }}</span></p><p class="work-time"><span v-for="(workplace, index) in post.workPlace.filter(work => work.active)" :key="index" class="work-time-item">{{ workplace.name }}</span></p></div>
+              <div class="job-stack"><p class="job-tags"><span v-for="(tag, index) in post.tags" :key="index" class="tag">{{ tag.fullName }}</span></p><p class="work-time"><span v-for="(workplace, index) in post.workPlace.filter(work => work.active)" :key="index" :class="workplace.class" class="work-time-item">{{ workplace.name }}</span></p></div>
           </article>
         </div>
       </div>
@@ -27,13 +23,15 @@
   </div>
 </template>
 <script>
-import TheDashboardJobFilters from "./TheDashboardJobFilters.vue";
+import Popup from './Popup.vue';
+import Spinner from './Spinner.vue';
 import getPosts from '../api/getPosts.js';
 
 export default {
   name: "DashboardJobItems",
   components: {
-    TheDashboardJobFilters,
+    Spinner,
+    Popup
   },
   computed: {
     splashscreen(){
@@ -41,6 +39,9 @@ export default {
     },
     posts(){
       return this.$store.state.posts;
+    },
+    requestFailed(){
+      return this.$store.state.request.find(req => req.name === 'failed').status;
     }
   },
   methods: {
@@ -51,12 +52,16 @@ export default {
       try {
         this.$store.commit('updateSplashscreen', true)
 
-        const result = await getPosts();
-        this.$store.commit('getPosts', result)
+        const body = await getPosts();
+        const result = await body.json();
 
+        this.$store.commit('getPosts', result)
+        
+        this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
         this.$store.commit('updateSplashscreen', false)
       } catch {
-        console.log('Something went wrong');
+        this.$store.commit('updateSplashscreen', false)
+        this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false }))
       }
     }
   },
@@ -76,15 +81,15 @@ export default {
 .content {
   max-width: 635px;
   width: 100%;
-  padding-top: 52px;
-  height: calc(100vh - 92px);
+  padding-top: 25px;
+  height: calc(100vh - 172px);
   overflow: hidden;
 }
 
 .scroll-hidden {
   position: relative;
   left: 17px;
-  height: calc(100% - 63px);
+  height: 100%;
   overflow-y: scroll;
   border-radius: 10px 0 0 0;
 }
@@ -122,13 +127,14 @@ export default {
 }
 
 .job-item-salary {
-  color: #87ffa6;
+  color: #87ff9b;
+  font-size: 18px;
 }
 
 .job-info {
   font-size: 14px;
   color: #d2d2d2;
-  margin-top: 15px;
+  margin-top: 13px;
 }
 
 .company::before, .place::before {
@@ -168,8 +174,15 @@ export default {
   justify-content: space-between;
 }
 
-.tag, .work-time-item {
-  background: #91b8ff;
+.work-time {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  top: -21px;
+}
+
+.tag{
+  background: #aecbfe;
   height: 21px;
   border-radius: 10.5px;
   padding: 0 12px;
@@ -178,42 +191,32 @@ export default {
   justify-content: center;
 }
 
+.work-time-item  {
+  font-size: 11px;
+  height: 21px;
+  border-radius: 10.5px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remote {
+  border: 1px solid #ff00a2;
+  color: #ff00a2;
+}
+
+.office {
+  color: #b400ff;
+  border: 1px solid #b400ff;
+}
+
 .work-time-item:nth-child(1n+2) {
-  margin-left: 5px;
+  margin-left: 7px;
 }
 
 .tag:nth-child(1n+2){
   margin-left: 16px;
-}
-
-.splashscreen {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.dots {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: 0 auto;
-  width: max-content;
-  position: relative;
-  top: 112px;
-}
-
-.dots-item {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #91b8ff;
-  display: block;
-}
-
-.dots-item:nth-child(2){
-  margin: 0 10px;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -224,4 +227,12 @@ export default {
   opacity: 0;
 }
 
+.fetch-enter-active, .fetch-leave-active {
+  transition: opacity 1.5s ease, top 1.5s ease;
+}
+
+.fetch-enter-from, .fetch-leave-to {
+  opacity: 0;
+  top: -50px;
+}
 </style>

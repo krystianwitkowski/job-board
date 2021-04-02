@@ -1,26 +1,43 @@
 <template>
     <nav class="menu">
         <div class="wrapper">
-            <ul class="menu-list">
-                <li class="menu-list-item"><router-link to="/signup" class="menu-list-link signup" href="#">Sign up</router-link></li>
-                <li class="menu-list-item"><router-link to="/signin" class="menu-list-link signin" href="#">Sign in</router-link></li>
-            </ul>
-            <TheDashboardFilters />
-            <ul v-if="auth()" class="menu-list user">
-                <li class="menu-list-item"><a @click.prevent="getCreate" class="menu-list-link create" href="#">Create</a></li>
-                <li class="menu-list-item"><a @click.prevent="getLogout" class="menu-list-link logout" href="#">Log out</a></li>
-            </ul>
+            <div class="nav-wrapper">
+                <ul class="menu-list">
+                    <li class="menu-list-item"><router-link to="/signup" class="menu-list-link signup" href="#">Sign up</router-link></li>
+                    <li class="menu-list-item"><router-link to="/signin" class="menu-list-link signin" href="#">Sign in</router-link></li>
+                </ul>
+                <TheDashboardFilters />
+                <ul v-if="auth()" class="menu-list user">
+                    <li class="menu-list-item"><a @click.prevent="getCreate" class="menu-list-link create" href="#">Create</a></li>
+                    <li class="menu-list-item"><a @click.prevent="getLogout" class="menu-list-link logout" href="#">Log out</a></li>
+                </ul>
+            </div>
+            <span class="line"></span>
+            <div class="filters-nav">
+                <div @click="toggleFilters" class="filter-icon"></div>
+                <TheSearch />
+                <TheFiltersPopup v-if="isFilters" />
+            </div>
         </div>
     </nav>
 </template>
 
 <script>
+import TheSearch from "./TheSearch.vue";
+import TheFiltersPopup from "./TheFiltersPopup.vue";
 import TheDashboardFilters from './TheDashboardFilters.vue';
 
 export default {
     name: 'TheDashboardNav',
     components: {
-        TheDashboardFilters
+        TheDashboardFilters,
+        TheSearch,
+        TheFiltersPopup
+    },
+    data(){
+        return{
+            isFilters: false
+        }
     },
     methods: {
         auth(){
@@ -33,27 +50,79 @@ export default {
         getCreate(){
             this.$store.commit('updateCreatePost', !this.$store.state.createPost);
         },
+        toggleFilters(){
+            this.isFilters = !this.isFilters
+        }
     }
 }
 </script>
 
 <style scoped>
     .menu{
-        height: 92px;
         background: #ffffff;
         box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
+        padding-top: 25px;
     }
 
     .wrapper {
         margin: 0 auto;
         max-width: 1050px;
         width: 90%;
+        height: 100%;
+    }
+
+    .nav-wrapper {
         display: flex;
         flex-direction: row;
         align-items: center;
+    }
+
+    .line {
+        content: '';
+        width: 10000px;
+        height: 1px;
+        background-color: #f8f8f8;
+        display: block;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 31px;
+    }
+
+    .filters-nav {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 75px;
+        position: relative;
+    }
+
+    .filter-icon {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 100%;
+    }
+
+    .filter-icon:after{
+        content: '';
+        width: 1px;
+        height: 100%;
+        background: #f8f8f8;
+        display: block;
+        margin-left: 27px;
+    }
+
+    .filter-icon::before {
+        content: '\f1de';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 21px;
+        color: #dad9d9;
+        cursor: pointer;
     }
 
     .menu-list-link {

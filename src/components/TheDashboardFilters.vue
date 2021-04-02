@@ -78,16 +78,20 @@ export default {
     
         try {
           this.$store.commit('updateSplashscreen', true)
+          
           const body = await getPostsFilter({ filter: targetFilter });
           const result = await body.json();
 
           this.bg = this.bg.map(bg => bg.name === targetFilter ? {...bg, active: true } : {...bg, active: false })
           
           this.$store.commit('getPosts', result)
+
           this.$store.commit('updatePostsFilter', targetFilter)
+          this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
           this.$store.commit('updateSplashscreen', false)
         } catch {
-          console.log('Something went wrong')
+          this.$store.commit('updateSplashscreen', false)
+          this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false }))
         }
 
     },

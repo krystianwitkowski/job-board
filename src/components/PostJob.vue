@@ -203,10 +203,12 @@ export default {
         workPlace: [
           {
             name: 'Remote',
+            class: 'remote',
             active: true
           },
           {
             name: 'Office',
+            class: 'office',
             active: false
           },
         ],

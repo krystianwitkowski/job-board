@@ -155,6 +155,7 @@ else {
     if(req.query.filter === 'all') {
       res.status(200).json(getPosts)
     }
+
     else {
       res.status(200).json(getPosts.filter(post => post.tags.find(tag => tag.name === req.query.filter)))
     }
@@ -164,9 +165,31 @@ else {
     res.status(200).json(getPosts.filter(post => post.job.includes(req.query.search)))
   }
 
+  else if (req.query.currency && req.query.workplace){
+    const APIcurrency = req.query.currency.split(',');
+    const APIworkplace = req.query.workplace.split(',');
+
+    if(APIcurrency.length === 1 && APIworkplace.length === 1){
+      res.status(200).json(getPosts.filter(post => post.currency.find(cur => cur.active && cur.name === APIcurrency[0]) && post.workPlace.find(place => place.active && place.name === APIworkplace[0])))
+    }
+
+    else if(APIcurrency.length === 2 && APIworkplace.length === 1){
+      res.status(200).json(getPosts.filter(post => post.currency.every((cur, i) => cur.name === APIcurrency[i]) && post.workPlace.find(place => place.active && place.name === APIworkplace[0])))
+    }  
+
+    else if(APIcurrency.length === 1 && APIworkplace.length === 2){
+      res.status(200).json(getPosts.filter(post => post.currency.find(cur => cur.active && cur.name === APIcurrency[0]) && post.workPlace.every((place, i) => place.name === APIworkplace[i])))
+    }
+
+    else if(APIcurrency.length === 2 && APIworkplace.length === 2){
+      res.status(200).json(getPosts.filter(post => post.currency.every((cur, i) => cur.name === APIcurrency[i]) && post.workPlace.every((place, i) => place.name === APIworkplace[i])))
+    }
+  }
+
   else {
     res.status(200).json(getPosts)
   }
+
 })
 
 Router.route('/:id')

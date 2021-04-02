@@ -16,12 +16,13 @@
                 </div>
                 <div class="salary">
                     <p class="salary-name">Salary</p>
-                    <p class="salary-value">{{ post.minSalary + ' - ' + post.maxSalary + ' ' + (post.currency ? currency : null )}}</p>
+                    <p class="salary-value">{{ Number(post.minSalary).toLocaleString() + ' - ' + Number(post.maxSalary).toLocaleString() + ' ' + (post.currency ? currency : null )}}</p>
                 </div>
             </div>
             <div class="work-place">
-                <p v-for="(workplace, index) in (post.workPlace ? post.workPlace.filter(workplace => workplace.active) : [])" :key="index" class="work-place-item">{{ workplace.name }}</p>
+                <p v-for="(workplace, index) in (post.workPlace ? post.workPlace.filter(workplace => workplace.active) : [])" :key="index" :class="workplace.class" class="work-place-item">{{ workplace.name }}</p>
             </div>
+            <h2 class="job-description-title">Description</h2>
             <div class="job-post-description">
                 <p v-html="post.textarea" class="job-post-text"></p>
             </div>
@@ -71,9 +72,9 @@ export default {
     position: absolute;
     left: 44px;
     top: 14px;
-    width: 23px;
-    height: 23px;
-    background: #f5f5f5;
+    width: 24px;
+    height: 24px;
+    background: #f0f0f0;
     border-radius: 3.5px;
     display: flex;
     flex-direction: row;
@@ -87,7 +88,7 @@ export default {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     color: #cecccc;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .job-post-header {
@@ -95,6 +96,7 @@ export default {
     border-radius: 10.5px;
     padding: 43px;
     height: 155px;
+    box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
 }
 
 .job-post-header__title {
@@ -133,6 +135,7 @@ export default {
     display: flex;
     flex-direction: row;
     margin-top: 20px;
+    padding: 0 12px;
 }
 
 .job-post-tags {
@@ -146,12 +149,12 @@ export default {
     height: 57px;
     border-radius: 10.5px;
     padding: 0 25px;
-    margin-left: 12px;
     font-weight: 300;
+    box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
 }
 
 .job-post-tag{
-    background: #91b8ff;
+    background: #aecbfe;
     height: 21px;
     display: flex;
     flex-direction: row;
@@ -170,6 +173,10 @@ export default {
     flex-direction: row;
     margin-left: 20px;
     width: 100%;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
+    padding: 0 25px;
 }
 
 .salary-name {
@@ -177,11 +184,6 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    max-width: 96px;
-    width: 100%;
-    border-radius: 10.5px;
-    box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
     color: #6a6a6a;
 }
 
@@ -190,16 +192,15 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    color: #87ffa6;
-    margin-left: 16px;
+    color: #aecbfe;
+    padding-left: 15px;
 }
 
 .work-place {
     display: flex;
     flex-direction: row;
     font-weight: 300;
-    color: #ffffff;
-    margin-top: 67px;
+    margin-top: 47px;
     margin-left: 12px;
 }
 
@@ -208,7 +209,6 @@ export default {
 }
 
 .work-place-item {
-    background: #91b8ff;
     font-size: 12px;
     height: 21px;
     display: flex;
@@ -219,15 +219,38 @@ export default {
     padding: 0 12px;
 }
 
-.job-post-text {
-    font-weight: 300;
-    margin-top: 41px;
-    font-size: 14px;
-    color: #7f7f7f;
-    width: 611px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.8;
+.remote {
+    border: 1px solid #ff00a2;
+    color: #ff00a2;
 }
 
+.office {
+    border: 1px solid #b400ff;
+    color: #b400ff;
+}
+
+.job-post-text {
+    font-weight: 300;
+    margin-top: 13px;
+    font-size: 14px;
+    color: #7f7f7f;
+    line-height: 1.8;
+    padding: 30px;
+}
+
+.job-description-title {
+    font-size: 18px;
+    color: #6a6a6a;
+    margin-top: 50px;
+    padding-left: 49px;
+}
+
+.job-post-description {
+    background: #ffffff;
+    box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+    width: 611px;
+    margin: 0 auto;
+    
+}
 </style>

@@ -1,5 +1,5 @@
 export default ({ nameCompany, email, password, repeatPassword }) => {
-    return fetch('https://simplejobdashboard.herokuapp.com/api/register', {
+    return fetch('http://localhost:5001/api/register', {
         headers: {
             'Content-Type': 'application/json'
         },

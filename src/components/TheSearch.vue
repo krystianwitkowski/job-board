@@ -1,19 +1,15 @@
 <template>
-    <div class="filters">
-        <div class="search">
-            <label class="label-search">
-                <span @click="getSearch" class="search-icon"></span>
-                <input @keyup.enter="getSearch" v-model="search" class="input-search" type="text" placeholder="Job">
-            </label>
-        </div>
-    </div>
+    <label class="label-search">
+        <span @click="getSearch" class="search-icon"></span>
+        <input @keyup.enter="getSearch" v-model="search" class="input-search" type="text" placeholder="Job">
+    </label>
 </template>
 
 <script>
 import getPostsSearch from '../api/getPostsSearch.js';
 
 export default {
-    name: 'TheDashboardJobFilters',
+    name: 'TheSearch',
     data(){
         return {
             search: ''
@@ -23,12 +19,18 @@ export default {
         async getSearch(){
             try {
                 this.$store.commit('updateSplashscreen', true)
-                const result = await getPostsSearch({ search: this.search })
+
+                const body = await getPostsSearch({ search: this.search })
+                const result = await body.json();
+
                 this.$store.commit('getPosts', result)
+                
+                this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
                 this.$store.commit('updateSplashscreen', false)
                 
             } catch {
-                console.log('Something went wrong');
+                this.$store.commit('updateSplashscreen', false)
+                this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false }))
             }
         }
     }
@@ -36,17 +38,6 @@ export default {
 </script>
 
 <style scoped>
-
-.filters {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 30px;
-}
-
-.search {
-    margin-left: 15px;
-}
 
 .search-icon::before {
     content: '\f002';
@@ -68,8 +59,7 @@ export default {
     width: 191px;
     height: 33px;
     border-radius: 16.5px;
-    background: #ffffff;
-    box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.03);
+    background: #f9f9f9;
     font-family: inherit;
     color: #dad9d9;
     padding-left: 23px;
@@ -81,6 +71,7 @@ export default {
 
 .label-search {
     position: relative;
+    margin-left: 28px;
 }
 
 ::placeholder{
