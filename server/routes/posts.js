@@ -165,6 +165,15 @@ else {
     res.status(200).json(getPosts.filter(post => post.job.includes(req.query.search)))
   }
 
+  else if(req.query.city){
+    if(req.query.city === 'All cities'){
+      res.status(200).json(getPosts)
+    }
+    else {
+      res.status(200).json(getPosts.filter(post => post.location === req.query.city))
+    }
+  }
+
   else if (req.query.currency && req.query.workplace){
     const APIcurrency = req.query.currency.split(',');
     const APIworkplace = req.query.workplace.split(',');

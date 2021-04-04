@@ -2,6 +2,8 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    page: 1,
+    limit: 10,
     createPost: false,
     posts: [],
     filter: null,

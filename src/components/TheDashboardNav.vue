@@ -17,12 +17,14 @@
                 <div @click="toggleFilters" class="filter-icon"></div>
                 <TheSearch />
                 <TheFiltersPopup v-if="isFilters" />
+                <TheCitiesFilter />
             </div>
         </div>
     </nav>
 </template>
 
 <script>
+import TheCitiesFilter from './TheCitiesFilter.vue';
 import TheSearch from "./TheSearch.vue";
 import TheFiltersPopup from "./TheFiltersPopup.vue";
 import TheDashboardFilters from './TheDashboardFilters.vue';
@@ -32,7 +34,8 @@ export default {
     components: {
         TheDashboardFilters,
         TheSearch,
-        TheFiltersPopup
+        TheFiltersPopup,
+        TheCitiesFilter
     },
     data(){
         return{

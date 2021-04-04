@@ -5,7 +5,7 @@
   </transition>
     <div class="content">
       <div class="jobs-wrapper">
-        <div class="scroll-hidden">
+        <div @scroll="paginationPosts" class="scroll-hidden">
           <transition name="fade">
             <Spinner v-show="splashscreen" />
           </transition>
@@ -76,6 +76,7 @@ export default {
   margin: 0 auto;
   max-width: 1050px;
   width: 90%;
+  position: relative;
 }
 
 .content {
