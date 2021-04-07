@@ -7,7 +7,6 @@ node_modules
 .env.local
 .env.*.local
 server/*.env
-server/*serviceAccountKey.json
 
 # Log files
 npm-debug.log*
@@ -23,3 +22,4 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+*.json
