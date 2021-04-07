@@ -1,5 +1,7 @@
 # jobboard
 
+Live: https://simplejobdashboard.herokuapp.com/#/signin
+
 ## Project setup
 ```
 npm install
