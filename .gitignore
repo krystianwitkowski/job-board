@@ -1,13 +1,12 @@
 .DS_Store
 node_modules
 /dist
-
+/public
 
 # local env files
 .env.local
 .env.*.local
 server/*.env
-server/*.serviceAccountKey.json
 
 # Log files
 npm-debug.log*
