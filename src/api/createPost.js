@@ -1,5 +1,5 @@
 export default async (form) => {
-    const body = await fetch('https://simplejobdashboard.herokuapp.com/api/apply', {
+    const body = await fetch('http://localhost:5001/api/apply', {
         headers: {
             'X-Access-Token': JSON.parse(localStorage.getItem('tokens')).accessToken,
             'Content-Type': 'application/json'

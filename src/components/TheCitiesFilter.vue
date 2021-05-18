@@ -35,6 +35,15 @@ export default {
                 },
                 {
                     name: 'Wrocław'
+                },
+                {
+                    name: 'Gdańsk'
+                },
+                {
+                    name: 'Szczecin'
+                },
+                {
+                    name: 'Bydgoszcz'
                 }
             ]
         }
@@ -63,7 +72,15 @@ export default {
                 this.changeNameFilter(e.target.getAttribute('data-city'))
                 this.toggleFilterList();
                 
-                this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
+                if(result.length === 0 ){
+                    this.$store.commit('updatePopup', { textClass: 'text-wrong', iconClass: 'icon-wrong', text: 'No offers. Please try later'})
+                    this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false }))
+                }
+                
+                else {
+                    this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
+                }
+
                 this.$store.commit('updateSplashscreen', false)
 
             } catch {

@@ -22,10 +22,18 @@ export default {
 
                 const body = await getPostsSearch({ search: this.search })
                 const result = await body.json();
-
+                
                 this.$store.commit('getPosts', result)
                 
-                this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
+                if(result.length === 0 ){
+                    this.$store.commit('updatePopup', { textClass: 'text-wrong', iconClass: 'icon-wrong', text: 'No offers. Please try later'})
+                    this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: true } : { ...req, status: false }))
+                }
+                
+                else {
+                    this.$store.commit('updateRequest', this.$store.state.request.map(req => req.name === 'failed' ? { ...req, status: false } : { ...req, status: false }))
+                }
+                
                 this.$store.commit('updateSplashscreen', false)
                 
             } catch {

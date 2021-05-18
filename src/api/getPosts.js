@@ -1,5 +1,5 @@
 export default () => {
-    const url = 'https://simplejobdashboard.herokuapp.com/api/posts';
+    const url = 'http://localhost:5001/api/posts';
     return fetch(url, {
         headers: {
             'Content-Type': 'application/json'

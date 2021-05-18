@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
   <transition name="fetch">
-    <Popup v-if="requestFailed" :position-class="true" text-class="text-wrong" icon-class="icon-wrong" text="Something went wrong" />
+    <Popup v-if="requestFailed" :position-class="true" :text-class="popup.textClass" :icon-class="popup.iconClass" :text="popup.text"/>
   </transition>
     <div class="content">
       <div class="jobs-wrapper">
@@ -23,6 +23,7 @@
   </div>
 </template>
 <script>
+
 import Popup from './Popup.vue';
 import Spinner from './Spinner.vue';
 import getPosts from '../api/getPosts.js';
@@ -39,6 +40,9 @@ export default {
     },
     posts(){
       return this.$store.state.posts;
+    },
+    popup(){
+      return this.$store.state.popup;
     },
     requestFailed(){
       return this.$store.state.request.find(req => req.name === 'failed').status;

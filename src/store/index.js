@@ -2,6 +2,11 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    popup: {
+      textClass: '',
+      iconClass: '',
+      text: ''
+    },
     page: 1,
     limit: 10,
     createPost: false,
@@ -68,6 +73,9 @@ export default createStore({
     },
     updateRequest(state, payload){
       return state.request = payload
+    },
+    updatePopup(state, payload){
+      return state.popup = payload
     }
   },
   actions: {},
