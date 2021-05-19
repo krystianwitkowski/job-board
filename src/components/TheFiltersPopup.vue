@@ -1,7 +1,6 @@
 <template>
     <div class="popup">
         <div class="currency">
-            <h2 class="currency-title">Currency</h2>
             <button @click="getCurrencyPLN" :class="{ 'active' : currencyPLN }" class="btn-currency pln">PLN</button>
             <button @click="getCurrencyUSD" :class="{ 'active' : currencyUSD }" class="btn-currency usd">USD</button>
         </div>
