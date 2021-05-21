@@ -1,5 +1,5 @@
 export default ({ email, password }) => {
-    return fetch('http://localhost:5001/api/authenticate', {
+    return fetch('https://simplejobdashboard.herokuapp.com/api/authenticate', {
         headers: {
             'Content-Type': 'application/json'
         },

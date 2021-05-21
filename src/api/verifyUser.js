@@ -1,5 +1,5 @@
 export default (verify) => {
-    return fetch('http://localhost:5001/api/verify', {
+    return fetch('https://simplejobdashboard.herokuapp.com/api/verify', {
         headers: {
             'Content-Type': 'application/json'
         },
